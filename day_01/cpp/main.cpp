@@ -4,46 +4,67 @@
 #include <vector>
 #include <string>
 
+std::vector<uint32_t> readInput();
+uint32_t part1(const std::vector<uint32_t> &);
+uint32_t part2(const std::vector<uint32_t> &);
+
 int main()
 {
+  std::vector<uint32_t> depths = readInput();
+
+  if(depths.size() == 0){
+    return 1;
+  }
+
+  std::cout << "Part 1 answer: " << part1(depths) << "\n";
+
+  std::cout << "Part 2 answer: " << part2(depths) << "\n";
+}
+
+std::vector<uint32_t> readInput()
+{
+
   std::ifstream file("../input/input.txt");
+  std::vector<uint32_t> numbers;
 
   if(!file)
   {
     std::cerr<<"Cannot find the file."<< std::endl;
-    return 1;
+    return numbers;
   }
 
-  std::vector<uint32_t> depth;
+  uint32_t number;
 
-  std::string depthString;
-
-  while(std::getline(file, depthString))
+  while(file >> number)
   {
-    if(depthString.size() > 0)
-    {
-      depth.push_back(std::stoi(depthString));
-    }
+      numbers.push_back(number);
   }
 
+  return numbers;
+}
+
+uint32_t part1(const std::vector<uint32_t> &depths)
+{
   uint32_t numOfIncreadDepths = 0;
 
-  for(auto index = 0; index < depth.size() - 1; ++index)
+  for(auto index = 0; index < depths.size() - 1; ++index)
   {
-    if(depth[index]  < depth[index+1])
+    if(depths[index]  < depths[index+1])
     {
       numOfIncreadDepths++;
     }
   }
+  return numOfIncreadDepths;
+}
 
-  std::cout << "Part 1 answer: " << numOfIncreadDepths << "\n";
+uint32_t part2(const std::vector<uint32_t> &depths)
+{
+  uint32_t numOfIncreadDepths = 0;
 
-  numOfIncreadDepths = 0;
-
-  for(auto index = 0; index < depth.size() - 3; ++index)
+  for(auto index = 0; index < depths.size() - 3; ++index)
   {
-    const auto lowerWindow = depth[index] + depth[index+1] + depth [index+2];
-    const auto higherWindow = depth[index + 1] + depth[index+2] + depth [index+3];
+    const auto lowerWindow = depths[index] + depths[index+1] + depths[index+2];
+    const auto higherWindow = depths[index + 1] + depths[index+2] + depths[index+3];
 
     if(lowerWindow  < higherWindow)
     {
@@ -51,5 +72,5 @@ int main()
     }
   }
 
-  std::cout << "Part 2 answer: " << numOfIncreadDepths << "\n";
+  return numOfIncreadDepths;
 }
