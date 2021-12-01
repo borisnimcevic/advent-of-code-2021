@@ -6,8 +6,7 @@
 
 int main()
 {
-  std::ifstream file("../input/part1.txt");
-  /* std::ifstream file("../input/part1-test.txt"); */
+  std::ifstream file("../input/input.txt");
 
   if(!file)
   {
@@ -15,36 +14,42 @@ int main()
     return 1;
   }
 
-  std::vector<uint32_t> inputNumbers;
+  std::vector<uint32_t> depth;
 
-  std::string numberString;
+  std::string depthString;
 
-  while(std::getline(file, numberString))
+  while(std::getline(file, depthString))
   {
-    if(numberString.size() > 0)
+    if(depthString.size() > 0)
     {
-      inputNumbers.push_back(std::stoi(numberString));
+      depth.push_back(std::stoi(depthString));
     }
   }
 
-  uint32_t increasingCounter = 0;
+  uint32_t numOfIncreadDepths = 0;
 
-  for(auto i = 0; i < inputNumbers.size() - 3; ++i)
+  for(auto index = 0; index < depth.size() - 1; ++index)
   {
-    int a = 0;
-    int b = 0;
-    a = inputNumbers[i] + inputNumbers[i+1] + inputNumbers [i+2];
-    b = inputNumbers[i + 1] + inputNumbers[i+2] + inputNumbers [i+3];
-    if(a < b)
+    if(depth[index]  < depth[index+1])
     {
-      increasingCounter++;
+      numOfIncreadDepths++;
     }
   }
 
-  /* for (auto i : inputNumbers) { */
-  /*   std::cout << i << std::endl; */
-  /* } */
+  std::cout << "Part 1 answer: " << numOfIncreadDepths << "\n";
 
-  std::cout << "size of the vector " <<  inputNumbers.size() << "\n";
-  std::cout << "Number of the distance incremented: " <<  increasingCounter << "\n";
+  numOfIncreadDepths = 0;
+
+  for(auto index = 0; index < depth.size() - 3; ++index)
+  {
+    const auto lowerWindow = depth[index] + depth[index+1] + depth [index+2];
+    const auto higherWindow = depth[index + 1] + depth[index+2] + depth [index+3];
+
+    if(lowerWindow  < higherWindow)
+    {
+      numOfIncreadDepths++;
+    }
+  }
+
+  std::cout << "Part 2 answer: " << numOfIncreadDepths << "\n";
 }
