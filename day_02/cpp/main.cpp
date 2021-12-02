@@ -13,7 +13,6 @@ int main()
 {
   std::cout << "part1: " << part1() << std::endl;
   std::cout << "part2: " << part2() << std::endl;
-
 }
 
 uint32_t part1()
@@ -69,7 +68,6 @@ uint32_t part2()
       {
         aim -= magnitude;
       }
-      direction = true;
   }
 
   return horizontal * depth;
