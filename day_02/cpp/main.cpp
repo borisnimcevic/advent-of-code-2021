@@ -20,12 +20,11 @@ uint32_t part1()
 {
   std::ifstream file(inputFile);
   std::map<std::string, uint32_t> directions;
-  uint32_t result = 0;
 
   if(!file)
   {
     std::cerr<<"Cannot find the file."<< std::endl;
-    return result;
+    return 0;
   }
 
   std::string line;
@@ -46,9 +45,7 @@ uint32_t part1()
     }
   }
 
-  result = directions["forward"] * (directions["down"] - directions["up"]);
-
-  return result;
+  return directions["forward"] * (directions["down"] - directions["up"]);
 }
 
 uint32_t part2()
