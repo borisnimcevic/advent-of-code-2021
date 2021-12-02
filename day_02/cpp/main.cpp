@@ -6,8 +6,8 @@
 uint32_t part1();
 uint32_t part2();
 
-std::string inputFile = "../input/input.txt";
-/* std::string inputFile = "../input/part1-test.txt"; */
+const std::string inputFile = "../input/input.txt";
+/* const std::string inputFile = "../input/part1-test.txt"; */
 
 int main()
 {
@@ -27,22 +27,12 @@ uint32_t part1()
     return 0;
   }
 
-  std::string line;
-  std::string temp;
-  bool direction = true;
+  std::string direction;
+  uint32_t magnitude;
 
-  while(file >> line)
+  while(file >> direction >> magnitude)
   {
-    if(direction)
-    {
-      temp = line;
-      direction = false;
-    }
-    else
-    {
-      directions[temp] += stoi(line);
-      direction = true;
-    }
+      directions[direction] += magnitude;
   }
 
   return directions["forward"] * (directions["down"] - directions["up"]);
@@ -58,37 +48,28 @@ uint32_t part2()
     return 0;
   }
 
-  std::string line;
-  std::string temp;
-  bool direction = true;
+  std::string direction;
+  uint32_t magnitude;
   uint32_t aim = 0;
   uint32_t horizontal = 0;
   uint32_t depth = 0;
 
-  while(file >> line)
+  while(file >> direction >> magnitude)
   {
-    if(direction)
-    {
-      temp = line;
-      direction = false;
-    }
-    else
-    {
-      if(temp == "forward")
+      if(direction == "forward")
       {
-        horizontal += stoi(line);
-        depth += aim * stoi(line);
+        horizontal += magnitude;
+        depth += aim * magnitude;
       }
-      else if(temp == "down")
+      else if(direction == "down")
       {
-        aim += stoi(line);
+        aim += magnitude;
       }
       else
       {
-        aim -= stoi(line);
+        aim -= magnitude;
       }
       direction = true;
-    }
   }
 
   return horizontal * depth;
