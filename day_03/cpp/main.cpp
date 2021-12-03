@@ -176,23 +176,15 @@ uint32_t  part2()
   }
 
   std::string binaryString;
-  std::map<uint8_t,uint32_t> ones;
-  std::map<uint8_t,uint32_t> zeros;
 
   while(file >> binaryString )
   {
     uint16_t number = 0;
     for(auto i = 0 ; i < binaryString.size() ; ++i)
     {
-      const auto exponent = binaryString.size() - i - 1;
       if(binaryString[i] == '1')
       {
-        number+= pow(2,exponent);
-        ones[exponent]++;
-      }
-      else
-      {
-        zeros[exponent]++;
+        number+= pow(2, binaryString.size() - i - 1);
       }
     }
     numbers.push_back(number);
