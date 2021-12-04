@@ -12,8 +12,7 @@ const std::string inputFile = "../input/input.txt";
 int main()
 {
   std::cout << part1() <<  " <<<<< part1" << std::endl;
-  /* std::cout << "part1: " << part1() << std::endl; */
-  /* std::cout << "part2: " << part2() << std::endl; */
+  std::cout << part2() <<  " <<<<< part2" << std::endl;
 }
 
 bool checkBingo(const std::vector<int32_t> &table){
@@ -119,6 +118,86 @@ uint32_t  part1()
       if(checkBingo(tableNum))
       {
         return sumTable(tableNum) * bingo;
+      }
+    }
+  }
+
+  return 0;
+}
+
+uint32_t part2()
+{
+  // ------ read bingo numbers
+  std::ifstream file(inputFile);
+
+  if(!file)
+  {
+    std::cerr<<"Cannot find the file."<< std::endl;
+    return 0;
+  }
+
+  std::string temp;
+  file >> temp;
+  /* std::cout << temp << std::endl; */
+
+  std::vector<uint32_t> bingoNumbers;
+
+  std::stringstream ss(temp);
+
+  for(int i; ss >> i;)
+  {
+    bingoNumbers.push_back(i);
+    if(ss.peek() == ',')
+    {
+      ss.ignore();
+    }
+  }
+
+  // ------ read the table
+  uint32_t number;
+  std::vector<int32_t> table;
+  std::vector<std::vector<int32_t>> tables;
+
+  while(file >> number){
+    table.push_back(number);
+
+    for(int i = 1; i < 25; i++)
+    {
+      file >> number;
+      table.push_back(number);
+    }
+
+    tables.push_back(table);
+    /* printTable(table); */
+    table.clear();
+  }
+
+  // ------ draw bingo numbers
+  uint32_t deletedTables = 0;
+  for(auto bingo : bingoNumbers){
+    for(auto &tableNum : tables)
+    {
+      for(auto &index : tableNum)
+      {
+        if(index == bingo)
+        {
+          index = -1;
+        }
+      }
+      if(checkBingo(tableNum))
+      {
+        if((tables.size() - deletedTables) > 1)
+        {
+          deletedTables++;
+          for(auto &a : tableNum)
+          {
+            a = -2;
+          }
+        }
+        else
+        {
+          return sumTable(tableNum) * bingo;
+        }
       }
     }
   }
