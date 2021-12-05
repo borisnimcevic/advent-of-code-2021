@@ -172,6 +172,40 @@ uint32_t  part1()
         field.at(line.at(1)).at(row)++;
       }
     }
+    else
+    {
+      const int Xdiff = line.at(2) - line.at(0);
+      const int Ydiff = line.at(3) - line.at(1);
+      if(Xdiff > 0 && Ydiff > 0)
+      {
+        for(int i = 0; i <= abs(Xdiff); i++)
+        {
+          field.at(line.at(1)+i).at(line.at(0)+i)++;
+        }
+      }
+      else if(Xdiff > 0 && Ydiff < 0)
+      {
+        for(int i = 0; i <= abs(Xdiff); i++)
+        {
+          field.at(line.at(1)-i).at(line.at(0)+i)++;
+        }
+      }
+      else if(Xdiff < 0 && Ydiff > 0)
+      {
+        for(int i = 0; i <= abs(Xdiff); i++)
+        {
+          field.at(line.at(1)+i).at(line.at(0)-i)++;
+        }
+      }
+      else if(Xdiff < 0 && Ydiff < 0)
+      {
+        for(int i = 0; i <= abs(Xdiff); i++)
+        {
+          field.at(line.at(1)-i).at(line.at(0)-i)++;
+        }
+      }
+
+    }
   }
 
   return calculatePoints(field);
