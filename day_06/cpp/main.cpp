@@ -57,7 +57,6 @@ void printFish(std::map<uint8_t, uint64_t> fish,const uint32_t day)
   std::cout << "After day " << day << "\n";
   for(int i = 0; i < 9; ++i)
   {
-    /* std::cout << i << ": " << fish.count(i) << std::endl; */
     std::cout << i << ": " << fish[i] << std::endl;
   }
 }
