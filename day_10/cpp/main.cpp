@@ -8,9 +8,10 @@
 #include <map>
 
 void getData(std::vector<std::string> &);
-/* uint64_t part1(const std::vector<std::string> &input); */
-uint64_t part2(const std::vector<std::string> &input);
 void clearCorrupted(std::vector<std::string> &input);
+
+uint64_t part1(const std::vector<std::string> &input);
+uint64_t part2(const std::vector<std::string> &input);
 
 const std::string inputFile = "../input/input.txt";
 /* const std::string inputFile = "../input/test.txt"; */
@@ -19,19 +20,10 @@ int main()
 {
   std::vector<std::string> input;
   getData(input);
-  /* std::cout << part1(input) <<  " <<<<< part1" << std::endl; */
+  std::cout << part1(input) <<  " <<<<< part1" << std::endl;
   clearCorrupted(input);
   std::cout << part2(input) <<  " <<<<< part2" << std::endl;
 }
-
-void printInput(const std::vector<std::string> &input)
-{
-  for(const auto &line : input)
-  {
-    std::cout << line << "\n";
-  }
-}
-
 
 void getData(std::vector<std::string> &input)
 {
@@ -48,8 +40,6 @@ void getData(std::vector<std::string> &input)
   {
     input.push_back(temp);
   }
-
-  /* printInput(input); */
 }
 
 void clearCorrupted(std::vector<std::string> &input)
@@ -86,8 +76,6 @@ void clearCorrupted(std::vector<std::string> &input)
   {
     input.erase(input.begin()+i);
   }
-
-  /* printInput(input); */
 
 }
 
@@ -163,13 +151,3 @@ uint64_t part2(const std::vector<std::string> &input)
 
   return nums.at(nums.size()/2);
 }
-
-
-
-
-
-
-
-
-
-
