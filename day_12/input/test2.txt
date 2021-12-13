@@ -1,0 +1,10 @@
+start HN 
+start dc 
+start kj
+LN dc
+dc HN
+kj HN
+kj dc
+kj sa
+HN end
+dc end
