@@ -8,18 +8,20 @@
 #include <map>
 #include <set>
 
-void attempt2();
+void part1();
+void part2();
 
 const std::string inputFile = "../input/input.txt";
 /* const std::string inputFile = "../input/test.txt"; */
 
-const uint32_t INF = 999;
+const uint32_t INF = 10000;
 std::vector<std::vector<uint32_t>> input;
 std::vector<std::vector<uint32_t>> distances;
 
 int main()
 {
-  attempt2();
+  part1();
+  part2();
 }
 
 
@@ -47,7 +49,6 @@ void printFeild(const std::vector<std::vector<uint32_t>> &field)
 
 void dijkstra(const std::pair<uint32_t, uint32_t> &point)
 {
-  uint32_t counter = 0;
   uint32_t const MAX_COL = input.at(0).size() -1;
   uint32_t const MAX_ROW = input.size() -1;
 
@@ -94,14 +95,12 @@ void dijkstra(const std::pair<uint32_t, uint32_t> &point)
         distances.at(row_adj).at(col_adj) = distances.at(current_spot.first).at(current_spot.second) + weight;
         extract_set.insert(std::make_pair(distances.at(row_adj).at(col_adj), node));
       }
-      counter++;
     }
   }
   std::cout << "shortest : " << (int)distances.back().back() << "\n";
-  std::cout << "itteration : " << (int)counter << "\n";
 }
 
-void attempt2()
+void part1()
 {
   std::ifstream file(inputFile);
 
@@ -140,5 +139,67 @@ void attempt2()
   start.first = 0;
   start.second = 0;
 
+  std::cout << "part1: \n";
+  dijkstra(start);
+}
+
+void part2()
+{
+  uint32_t width = input.at(0).size();
+  uint32_t height = input.size();
+  
+  for(int k = 0; k < 4; ++k)
+  {
+    for(int j = 0; j < height; ++j)
+    {
+      for(int i = 0; i < width; ++i)
+      {
+        uint32_t num = input.at(j).at(i+(k*width));
+        num++;
+        num %= 10;
+        if(num == 0)
+          num++;
+        input.at(j).push_back(num);
+      }
+    }
+  }
+
+  width = input.at(0).size();
+
+  for(int k = 0; k < 4; ++k)
+  {
+    for(int i = 0; i < height; i++)
+    {
+      std::vector<uint32_t> temp;
+      for(const auto &a : input.at(i+(k*height)))
+      {
+        auto num = (a+1)%10;
+        if(num == 0)
+          num++;
+        temp.push_back(num);
+      }
+      input.push_back(temp);
+    }
+  }
+
+  distances.clear();
+
+  for(const auto &row : input)
+  {
+    std::vector<uint32_t> temp_distance;
+    for(const auto &col: row)
+    {
+      temp_distance.push_back(INF);
+    }
+    distances.push_back(temp_distance);
+  }
+
+  distances.at(0).at(0) = 0;
+
+  std::pair<uint32_t,uint32_t> start;
+  start.first = 0;
+  start.second = 0;
+
+  std::cout << "part2: \n";
   dijkstra(start);
 }
