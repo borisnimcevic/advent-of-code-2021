@@ -14,19 +14,13 @@ void part1(const std::string &input);
 const std::string inputFile = "../input/input.txt";
 /* const std::string inputFile = "../input/test.txt"; */
 
-const std::string TEST1 = "D2FE28";
+/* const std::string TEST = "D2FE28"; */
+const std::string TEST = "38006F45291200";
 
 int main()
 {
-  part1(TEST1);
+  part1(TEST);
   /* part1("1"); */
-}
-
-template <size_t N1, size_t N2 >
-std::bitset <N1 + N2> concat( const std::bitset <N1> & b1, const std::bitset <N2> & b2 ) {
-    std::string s1 = b1.to_string();
-    std::string s2 = b2.to_string();
-    return std::bitset <N1 + N2>( s1 + s2 );
 }
 
 void printBin(const std::vector<bool> &in)
@@ -39,6 +33,16 @@ void printBin(const std::vector<bool> &in)
       std::cout << "0";
   }
   std::cout << "\n";
+}
+
+bool isAllZero(const std::vector<bool> &in)
+{
+  for(const auto &a: in)
+  {
+    if(a)
+      return false;
+  }
+  return true;
 }
 
 void part1(const std::string &input)
@@ -67,80 +71,100 @@ void part1(const std::string &input)
 
   // ===== read input end
 
-  int version = 0;
-  int type = 0;
-  std::vector<int> nums;
-
-  for(int i = 0; i < 3; ++i)
+  bool message_done = false;
+  while(!message_done)
   {
-    version <<=1;
-    if(msg.back())
-      version++;
-    msg.pop_back();
-  }
+    int version = 0;
+    int type = 0;
+    std::vector<int> nums;
 
-  std::cout << "version " << version << "\n";
-
-  for(int i = 0; i < 3; ++i)
-  {
-    type <<=1;
-    if(msg.back())
-      type++;
-    msg.pop_back();
-  }
-
-  std::cout << "type " << type << "\n";
-
-  if(type == 4)
-  {
-    int num_counter = 0;
-    bool end_packet = false;
-    while(!end_packet)
+    for(int i = 0; i < 3; ++i)
     {
-      if(!msg.back())
-        end_packet = true;
-
+      version <<=1;
+      if(msg.back())
+        version++;
       msg.pop_back();
+    }
 
-      int temp_num = 0;
-      for(int i = 0; i < 4; ++i)
+    std::cout << "version " << version << "\n";
+
+    for(int i = 0; i < 3; ++i)
+    {
+      type <<=1;
+      if(msg.back())
+        type++;
+      msg.pop_back();
+    }
+
+    std::cout << "type " << type << "\n";
+
+    if(type == 4)
+    {
+      int num_counter = 0;
+      bool end_packet = false;
+      while(!end_packet)
       {
-        temp_num <<=1;
-        if(msg.back())
-          temp_num++;
+        if(!msg.back())
+          end_packet = true;
 
         msg.pop_back();
+
+        int temp_num = 0;
+        for(int i = 0; i < 4; ++i)
+        {
+          temp_num <<=1;
+          if(msg.back())
+            temp_num++;
+
+          msg.pop_back();
+        }
+
+        nums.push_back(temp_num);
+        num_counter++;
       }
 
-      nums.push_back(temp_num);
-      num_counter++;
-    }
-
-    int leftover_bits = 4 - ((num_counter * 5 + 6) % 4);
-    if(leftover_bits != 4)
-    {
-      for(int i = 0; i < leftover_bits; ++i)
+      /* int leftover_bits = 4 - ((num_counter * 5 + 6) % 4); */
+      /* if(leftover_bits != 4) */
+      /* { */
+      /*   for(int i = 0; i < leftover_bits; ++i) */
+      /*   { */
+      /*     msg.pop_back(); */
+      /*   } */
+      /* } */
+      int literal_number = 0;
+      for(int i = 0; i < nums.size(); ++i)
       {
-        msg.pop_back();
+        literal_number += nums.at(i) << ((nums.size() - i -1) * 4);
+      }
+      std::cout << "literal_number : " << literal_number << "\n";
+      /* printBin(msg); */
+      std::cout << "\n";
+    }
+    else
+    {
+      bool typeID = msg.back();
+      msg.pop_back();
+      std::cout << "typeID " << typeID <<  "\n";
+      if(typeID)
+      {
+      }
+      else
+      {
+        // 15 bits
+        std::bitset<15> bit_length;
+        for(int i = 0; i < 15; ++i)
+        {
+          bit_length[15 - 1 - i] = msg.back();
+          msg.pop_back();
+        }
+        /* std::cout << bit_length << "\n"; */
+        std::cout << "bit length : " << (int)bit_length.to_ulong() << "\n";
+        /* printBin(msg); */
+        std::cout << "\n";
       }
     }
-    int literal_number = 0;
-    for(int i = 0; i < nums.size(); ++i)
-    {
-      literal_number += nums.at(i) << ((nums.size() - i -1) * 4);
-    }
-    std::cout << "literal_number : " << literal_number << "\n";
-  }
-  else
-  {
-    std::cout << "non-existing type\n";
+
+    message_done = isAllZero(msg);
   }
 
-/*   for(const auto n : nums) */
-/*   { */
-/*     std::cout << n << ", "; */
-/*   } */
-/*   std::cout << "\n"; */
-
-/*   std::cout << "size of msg : " << msg.size() << "\n"; */
 }
