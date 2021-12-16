@@ -15,7 +15,8 @@ const std::string inputFile = "../input/input.txt";
 /* const std::string inputFile = "../input/test.txt"; */
 
 /* const std::string TEST = "D2FE28"; */
-const std::string TEST = "38006F45291200";
+/* const std::string TEST = "38006F45291200"; */
+const std::string TEST = "EE00D40C823060";
 
 int main()
 {
@@ -147,6 +148,14 @@ void part1(const std::string &input)
       std::cout << "typeID " << typeID <<  "\n";
       if(typeID)
       {
+        std::bitset<11> sub_packet;
+        for(int i = 0; i < 11; ++i)
+        {
+          sub_packet[11 - 1 - i] = msg.back();
+          msg.pop_back();
+        }
+        std::cout << "bit length : " << (int)sub_packet.to_ulong() << "\n";
+        std::cout << "\n";
       }
       else
       {
