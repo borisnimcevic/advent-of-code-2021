@@ -91,43 +91,56 @@ void part1(const std::string &input)
 
   std::cout << "type " << type << "\n";
 
-  int num_counter = 0;
-  bool end_packet = false;
-  while(!end_packet)
+  if(type == 4)
   {
-    if(!msg.back())
-      end_packet = true;
-
-    msg.pop_back();
-
-    int temp_num = 0;
-    for(int i = 0; i < 4; ++i)
+    int num_counter = 0;
+    bool end_packet = false;
+    while(!end_packet)
     {
-      temp_num <<=1;
-      if(msg.back())
-        temp_num++;
+      if(!msg.back())
+        end_packet = true;
 
       msg.pop_back();
+
+      int temp_num = 0;
+      for(int i = 0; i < 4; ++i)
+      {
+        temp_num <<=1;
+        if(msg.back())
+          temp_num++;
+
+        msg.pop_back();
+      }
+
+      nums.push_back(temp_num);
+      num_counter++;
     }
 
-    nums.push_back(temp_num);
-    num_counter++;
-  }
-
-  int leftover_bits = 4 - ((num_counter * 5 + 6) % 4);
-  if(leftover_bits != 4)
-  {
-    for(int i = 0; i < leftover_bits; ++i)
+    int leftover_bits = 4 - ((num_counter * 5 + 6) % 4);
+    if(leftover_bits != 4)
     {
-      msg.pop_back();
+      for(int i = 0; i < leftover_bits; ++i)
+      {
+        msg.pop_back();
+      }
     }
+    int literal_number = 0;
+    for(int i = 0; i < nums.size(); ++i)
+    {
+      literal_number += nums.at(i) << ((nums.size() - i -1) * 4);
+    }
+    std::cout << "literal_number : " << literal_number << "\n";
   }
-
-  for(const auto n : nums)
+  else
   {
-    std::cout << n << ", ";
+    std::cout << "non-existing type\n";
   }
-  std::cout << "\n";
 
-  std::cout << "size of msg : " << msg.size() << "\n";
+/*   for(const auto n : nums) */
+/*   { */
+/*     std::cout << n << ", "; */
+/*   } */
+/*   std::cout << "\n"; */
+
+/*   std::cout << "size of msg : " << msg.size() << "\n"; */
 }
