@@ -29,84 +29,86 @@ void getInput()
   }
 
   std::string row_temp;
-  std::pair<int, int> nums_temp;
-  std::pair<int, std::pair<int, int>> obj_temp;
-  std::vector<std::pair<int, std::pair<int, int>>> entry_temp;
-  int lvl_counter = 0;
 
-  file >> row_temp;
-
-  std::stringstream ss(row_temp);
-
-  std::vector<char> char_stack;
-
-  for (auto i : row_temp) 
+  while(file >> row_temp)
   {
-    if(i == ']')
+    std::vector<char> char_stack;
+    std::pair<int, int> nums_temp;
+    std::pair<int, std::pair<int, int>> obj_temp;
+    std::vector<std::pair<int, std::pair<int, int>>> entry_temp;
+    int lvl_counter = 0;
+
+    for (auto i : row_temp) 
     {
-      lvl_counter--;
-      if(char_stack.back() == ',')
+      if(i == ']')
       {
-        if(char_stack.at(char_stack.size()-2) == '[')
+        lvl_counter--;
+        if(char_stack.back() == ',')
         {
-          char_stack.pop_back(); // remove comma
-          char_stack.pop_back(); // remove open bracket
+          if(char_stack.at(char_stack.size()-2) == '[')
+          {
+            char_stack.pop_back(); // remove comma
+            char_stack.pop_back(); // remove open bracket
+          }
+          else
+          {
+            nums_temp.second = INF;
+            char_stack.pop_back(); // remove comma
+            nums_temp.first = char_stack.back() - '0';
+            char_stack.pop_back(); // remove number
+            char_stack.pop_back(); // remove open bracket
+            obj_temp.first = lvl_counter;
+            obj_temp.second.first = nums_temp.first;
+            obj_temp.second.second = nums_temp.second;
+            // swap the input with the latest one
+            std::pair<int, std::pair<int, int>> temp = entry_temp.back();
+            entry_temp.pop_back();
+            entry_temp.push_back(obj_temp);
+            entry_temp.push_back(temp);
+          }
         }
         else
         {
-          nums_temp.second = INF;
-          char_stack.pop_back(); // remove comma
-          nums_temp.first = char_stack.back() - '0';
-          char_stack.pop_back(); // remove number
-          char_stack.pop_back(); // remove open bracket
+          nums_temp.second = char_stack.back() - '0';
+          char_stack.pop_back(); // pop number
+          char_stack.pop_back(); // pop comma
+          if(char_stack.back() == '[')
+          {
+            nums_temp.first = INF;
+          }
+          else
+          {
+            nums_temp.first = char_stack.back() - '0';
+            char_stack.pop_back(); // pop number
+          }
+          char_stack.pop_back(); // pop open bracket
           obj_temp.first = lvl_counter;
           obj_temp.second.first = nums_temp.first;
           obj_temp.second.second = nums_temp.second;
           entry_temp.push_back(obj_temp);
         }
       }
+      else if(i == '[')
+      {
+        lvl_counter++;
+        char_stack.push_back(i);
+      }
       else
       {
-        nums_temp.second = char_stack.back() - '0';
-        char_stack.pop_back(); // pop number
-        char_stack.pop_back(); // pop comma
-        if(char_stack.back() == '[')
-        {
-          nums_temp.first = INF;
-        }
-        else
-        {
-          nums_temp.first = char_stack.back() - '0';
-          char_stack.pop_back(); // pop number
-        }
-        char_stack.pop_back(); // pop open bracket
-        obj_temp.first = lvl_counter;
-        obj_temp.second.first = nums_temp.first;
-        obj_temp.second.second = nums_temp.second;
-        entry_temp.push_back(obj_temp);
+        char_stack.push_back(i);
       }
     }
-    else if(i == '[')
+
+
+    std::cout << std::endl;
+    std::cout << std::endl;
+
+    std::cout << row_temp << std::endl;
+    for (auto a : entry_temp) 
     {
-      lvl_counter++;
-      char_stack.push_back(i);
+      std::cout << "([" << a.first << "][" << a.second.first << "," << a.second.second << "]), ";
     }
-    else
-    {
-      char_stack.push_back(i);
-    }
+    std::cout << std::endl;
   }
-
-
-  std::cout << std::endl;
-  std::cout << std::endl;
-
-  std::cout << row_temp << std::endl;
-  for (auto a : entry_temp) 
-  {
-    std::cout << "([" << a.first << "][" << a.second.first << "," << a.second.second << "]), ";
-  }
-  std::cout << std::endl;
-
 
 }
