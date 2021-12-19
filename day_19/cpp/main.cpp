@@ -215,6 +215,7 @@ void part1()
   points.first = p1;
   points.second = p2;
 
+  // check 16 axis
   for(int i = 0; i < 4; ++i){
     rotateAxis(scanners.at(1),'z');
     moveScanner(scanners.at(0),scanners.at(1),p1,p2);
@@ -229,6 +230,39 @@ void part1()
           int sum = countOverlap(scanners.at(0), scanners.at(1));
           std::cout << "number of overlaps: " << sum << "\n";
       }
+    }
+  }
+
+  // check 8 axis
+  rotateAxis(scanners.at(1),'y');
+  moveScanner(scanners.at(0),scanners.at(1),p1,p2);
+
+  for(int i = 0; i < 4; ++i){
+    rotateAxis(scanners.at(1),'x');
+    moveScanner(scanners.at(0),scanners.at(1),p1,p2);
+
+    // check if they align
+    if(pointsMatch(scanners.at(0),scanners.at(1),p1,p2))
+    {
+        int sum = countOverlap(scanners.at(0), scanners.at(1));
+        std::cout << "number of overlaps: " << sum << "\n";
+    }
+  }
+
+  rotateAxis(scanners.at(1),'y');
+  moveScanner(scanners.at(0),scanners.at(1),p1,p2);
+  rotateAxis(scanners.at(1),'y');
+  moveScanner(scanners.at(0),scanners.at(1),p1,p2);
+
+  for(int i = 0; i < 4; ++i){
+    rotateAxis(scanners.at(1),'x');
+    moveScanner(scanners.at(0),scanners.at(1),p1,p2);
+
+    // check if they align
+    if(pointsMatch(scanners.at(0),scanners.at(1),p1,p2))
+    {
+        int sum = countOverlap(scanners.at(0), scanners.at(1));
+        std::cout << "number of overlaps: " << sum << "\n";
     }
   }
 }
