@@ -50,6 +50,78 @@ void moveScanner(Scanner &scan, const int xm, const int  ym, const int zm)
   }
 }
 
+void moveScanner(const Scanner &s1,
+                  Scanner &s2,
+                  const std::pair<int, int> &p1,
+                  const std::pair<int, int> &p2
+                  )
+{
+  // get target coordinates
+  const int xm = s1.beacons.at(p1.first).x - s2.beacons.at(p2.first).x;
+  const int ym = s1.beacons.at(p1.first).y - s2.beacons.at(p2.first).y;
+  const int zm = s1.beacons.at(p1.first).z - s2.beacons.at(p2.first).z;
+
+  for(auto &b : s2.beacons)
+  {
+    b.x += xm;
+    b.y += ym;
+    b.z += zm;
+  }
+}
+
+bool pointsMatch(
+    const Scanner &s1,
+    const Scanner &s2,
+    const std::pair<int, int> &p1,
+    const std::pair<int, int> &p2)
+{
+  if(s1.beacons.at(p1.first).x == s2.beacons.at(p2.first).x &&
+     s1.beacons.at(p1.first).y == s2.beacons.at(p2.first).y &&
+     s1.beacons.at(p1.first).z == s2.beacons.at(p2.first).z)
+  {
+    std::cout << "first points match\n";
+    if(s1.beacons.at(p1.second).x == s2.beacons.at(p2.second).x &&
+       s1.beacons.at(p1.second).y == s2.beacons.at(p2.second).y &&
+       s1.beacons.at(p1.second).z == s2.beacons.at(p2.second).z)
+    {
+      return true;
+    }
+
+  }
+
+  return false;
+}
+
+void rotateAxis(Scanner &scan, const char axis)
+{
+  for(auto &b: scan.beacons)
+  {
+    if(axis == 'x')
+    {
+      int temp = b.y;
+      b.y = b.z;
+      b.z = temp;
+      b.z *= -1;
+    }
+    if(axis == 'y')
+    {
+      int temp = b.x;
+      b.x = b.z;
+      b.z = temp;
+      b.z *= -1;
+    }
+
+    if(axis == 'z')
+    {
+      int temp = b.x;
+      b.x = b.y;
+      b.y = temp;
+      b.y *= -1;
+    }
+  }
+}
+
+
 void part1()
 {
   // ------ read bingo numbers
@@ -130,36 +202,15 @@ void part1()
   points.first = p1;
   points.second = p2;
 
-  // get target coordinates
-  int xt = scanners.at(0).beacons.at(p1.first).x;
-  int yt = scanners.at(0).beacons.at(p1.first).y;
-  int zt = scanners.at(0).beacons.at(p1.first).z;
 
-  // move the next scanner to match the point
-  int xm = xt - scanners.at(1).beacons.at(p2.first).x;
-  int ym = yt - scanners.at(1).beacons.at(p2.first).y;
-  int zm = zt - scanners.at(1).beacons.at(p2.first).z;
-
-  moveScanner(scanners.at(1), xm, ym, zm);
+  /* rotateAxis(scanners.at(1),'x'); */
+  moveScanner(scanners.at(0),scanners.at(1),p1,p2);
 
   // check if they align
-  if(scanners.at(0).beacons.at(p1.first).x == scanners.at(1).beacons.at(p2.first).x &&
-     scanners.at(0).beacons.at(p1.first).y == scanners.at(1).beacons.at(p2.first).y &&
-     scanners.at(0).beacons.at(p1.first).z == scanners.at(1).beacons.at(p2.first).z
-    )
+  if(pointsMatch(scanners.at(0),scanners.at(1),p1,p2))
   {
-    std::cout << "first points match\n";
-    if(scanners.at(0).beacons.at(p1.second).x == scanners.at(1).beacons.at(p2.second).x &&
-       scanners.at(0).beacons.at(p1.second).y == scanners.at(1).beacons.at(p2.second).y &&
-       scanners.at(0).beacons.at(p1.second).z == scanners.at(1).beacons.at(p2.second).z
-      )
-    {
-      std::cout << "SECOND points match\n";
-    }
+      std::cout << "BOTH\n";
   }
-
-  /* rotateAxis(); // * 4 */
-  /* swapAxis();   // * 6 */
 }
 
 
