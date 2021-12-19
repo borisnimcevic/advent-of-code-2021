@@ -3,6 +3,7 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <list>
 
 
 /* const std::string inputFile = "../input/input.txt"; */
@@ -29,17 +30,27 @@ void getInput()
   }
 
   std::string row_temp;
-
-  while(file >> row_temp)
-  {
+  file >> row_temp;
+  /* while(file >> row_temp) */
+  /* { */
     std::vector<char> char_stack;
     std::pair<int, int> nums_temp;
     std::pair<int, std::pair<int, int>> obj_temp;
     std::vector<std::pair<int, std::pair<int, int>>> entry_temp;
+    /* std::vector<std::pair<int, std::pair<int, int>>> entry_temp; */
     int lvl_counter = 0;
 
     for (auto i : row_temp) 
     {
+      std::cout << row_temp << std::endl;
+      std::cout << "stack: ";
+      for (auto c : char_stack) {
+        std::cout << c;
+      }
+      std::cout << "\n";
+      std::cout << "incoming char: " << i << "\n";
+      std::cin.get();
+
       if(i == ']')
       {
         lvl_counter--;
@@ -61,10 +72,16 @@ void getInput()
             obj_temp.second.first = nums_temp.first;
             obj_temp.second.second = nums_temp.second;
             // swap the input with the latest one
-            std::pair<int, std::pair<int, int>> temp = entry_temp.back();
-            entry_temp.pop_back();
             entry_temp.push_back(obj_temp);
-            entry_temp.push_back(temp);
+            int index = entry_temp.size()-1;
+            /* bool swap = true; */
+            while (index > 0 && entry_temp.at(index).first < entry_temp.at(index-1).first)
+            {
+              std::pair<int, std::pair<int, int>> temp = entry_temp.at(index);
+              entry_temp.at(index) = entry_temp.at(index-1);
+              entry_temp.at(index-1) = temp;
+              index--;
+            }
           }
         }
         else
@@ -109,6 +126,6 @@ void getInput()
       std::cout << "([" << a.first << "][" << a.second.first << "," << a.second.second << "]), ";
     }
     std::cout << std::endl;
-  }
+  /* } */
 
 }
