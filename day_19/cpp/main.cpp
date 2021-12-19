@@ -92,7 +92,7 @@ void part1()
   {
     //get distance
     /* for(int p = 0; p < scanners.at(0).beacons.size() ; ++p) */
-    for(int p = 1; p < 2; ++p)
+    for(int p = k+1; p < 2; ++p)
     {
       xd = abs(scanners.at(0).beacons.at(k).x - scanners.at(0).beacons.at(p).x);
       yd = abs(scanners.at(0).beacons.at(k).y - scanners.at(0).beacons.at(p).y);
@@ -103,7 +103,7 @@ void part1()
       int xd2, yd2, zd2 =0;
       for(int i = 0; i < scanners.at(1).beacons.size() ; ++i)
       {
-        for(int j = 0; j < scanners.at(1).beacons.size() ; ++j)
+        for(int j = i+1; j < scanners.at(1).beacons.size() ; ++j)
         {
           xd2 = abs(scanners.at(1).beacons.at(i).x - scanners.at(1).beacons.at(j).x);
           yd2 = abs(scanners.at(1).beacons.at(i).y - scanners.at(1).beacons.at(j).y);
@@ -148,8 +148,18 @@ void part1()
      scanners.at(0).beacons.at(p1.first).z == scanners.at(1).beacons.at(p2.first).z
     )
   {
-    std::cout << "firs points match\n";
+    std::cout << "first points match\n";
+    if(scanners.at(0).beacons.at(p1.second).x == scanners.at(1).beacons.at(p2.second).x &&
+       scanners.at(0).beacons.at(p1.second).y == scanners.at(1).beacons.at(p2.second).y &&
+       scanners.at(0).beacons.at(p1.second).z == scanners.at(1).beacons.at(p2.second).z
+      )
+    {
+      std::cout << "SECOND points match\n";
+    }
   }
+
+  /* rotateAxis(); // * 4 */
+  /* swapAxis();   // * 6 */
 }
 
 
