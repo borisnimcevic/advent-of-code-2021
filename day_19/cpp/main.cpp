@@ -166,137 +166,64 @@ int countOverlap(const Scanner &s1, const Scanner &s2)
   return sum;
 }
 
+/* int markCounted(Scanner &s1, Scanner &s2) */
+/* { */
+/*   int sum = 0; */
+/*   for (auto &b1 : s1.beacons) { */
+/*     for (auto &b2 : s2.beacons) { */
+/*       if(b1.x == b2.x && b1.y == b2.y && b1.z == b2.z) */
+/*       { */
+        /* if(!b1.counted && !b2.counted) */
+/*         if(b1.counted && b2.counted) */
+/*         { */
+/*         } */
+/*         else */
+/*         { */
+/*           sum++; */
+/*         } */
+/*         b1.counted = true; */
+/*         b2.counted = true; */
+/*       } */
+/*     } */
+/*   } */
+/*   return sum; */
+/* } */
 
-int checkAllaxis(const Scanner &s1, 
+int checkAllaxis(Scanner &s1, 
     Scanner &s2,
     const std::pair<std::pair<int, int>, std::pair<int, int>> &points)
 {
   // check 16 axis
+  Scanner st = s2;
   int max = 0;
-  for(int i = 0; i < 4; ++i){
-    rotateAxis(s2,'z');
-    moveScanner(s1,s2,points.first,points.second);
+  for(int j = 0; j < 4; ++j){
+    rotateAxis(st,'z');
+    moveScanner(s1,st,points.first,points.second);
 
     for(int i = 0; i < 4; ++i){
-      rotateAxis(s2,'x');
-      moveScanner(s1,s2,points.first,points.second);
+      rotateAxis(st,'x');
+      moveScanner(s1,st,points.first,points.second);
 
-      // check if they align
-      if(pointsMatch(s1,s2,points.first,points.second))
+      for(int k = 0; k < 4; ++k)
       {
-          int sum = countOverlap(s1,s2);
-          if(sum > max && sum > 11)
-          {
-            /* int tempx; */
-            /* int tempy; */
-            /* int tempz; */
-            max = sum;
-            return max;
-          /* std::cout << "Align on " << max << " points. Sensor pos: x: " << s2.x */
-          /*   << " y: " << s2.y << " z: " << s2.z << "\n"; */
-          }
+        rotateAxis(st,'y');
+        moveScanner(s1,st,points.first,points.second);
+
+        // check if they align
+        if(pointsMatch(s1,st,points.first,points.second))
+        {
+            int sum = countOverlap(s1,st);
+            if(sum > max && sum > 11)
+            {
+              max = sum;
+              s2 = st;
+            }
+        }
       }
     }
   }
 
-  for(int i = 0; i < 4; ++i){
-    rotateAxis(s2,'y');
-    moveScanner(s1,s2,points.first,points.second);
-
-    for(int i = 0; i < 4; ++i){
-      rotateAxis(s2,'x');
-      moveScanner(s1,s2,points.first,points.second);
-
-      // check if they align
-      if(pointsMatch(s1,s2,points.first,points.second))
-      {
-          int sum = countOverlap(s1,s2);
-          if(sum > max && sum > 11)
-          {
-            max = sum;
-            return max;
-          }
-      }
-    }
-  }
-/*   // check 16 axis */
-/*   int max = 0; */
-/*   for(int i = 0; i < 4; ++i){ */
-/*     rotateAxis(s2,'z'); */
-/*     moveScanner(s1,s2,points.first,points.second); */
-
-/*     for(int i = 0; i < 4; ++i){ */
-/*       rotateAxis(s2,'x'); */
-/*       moveScanner(s1,s2,points.first,points.second); */
-
-/*       // check if they align */
-/*       if(pointsMatch(s1,s2,points.first,points.second)) */
-/*       { */
-/*           int sum = countOverlap(s1,s2); */
-/*           if(sum > max) */
-/*           { */
-/*             max = sum; */
-          /* std::cout << "Align on " << max << " points. Sensor pos: x: " << s2.x */
-            /* << " y: " << s2.y << " z: " << s2.z << "\n"; */
-/*           } */
-/*       } */
-/*     } */
-/*   } */
-
-/*   for(int i = 0; i < 4; ++i){ */
-/*     rotateAxis(s2,'y'); */
-/*     moveScanner(s1,s2,points.first,points.second); */
-
-/*     for(int i = 0; i < 4; ++i){ */
-/*       rotateAxis(s2,'x'); */
-/*       moveScanner(s1,s2,points.first,points.second); */
-
-/*       // check if they align */
-/*       if(pointsMatch(s1,s2,points.first,points.second)) */
-/*       { */
-/*           int sum = countOverlap(s1,s2); */
-/*           if(sum > max) */
-/*             max = sum; */
-/*       } */
-/*     } */
-/*   } */
-
-/*   // check 4 axis */
-/*   rotateAxis(s2,'y'); */
-/*   moveScanner(s1,s2,points.first,points.second); */
-
-/*   for(int i = 0; i < 4; ++i){ */
-/*     rotateAxis(s2,'x'); */
-/*     moveScanner(s1,s2,points.first,points.second); */
-
-/*     // check if they align */
-/*     if(pointsMatch(s1,s2,points.first,points.second)) */
-/*     { */
-/*         int sum = countOverlap(s1,s2); */
-/*         if(sum > max) */
-/*           max = sum; */
-/*     } */
-/*   } */
-
-/*   // check 4 axis */
-/*   rotateAxis(s2,'y'); */
-/*   moveScanner(s1,s2,points.first,points.second); */
-/*   rotateAxis(s2,'y'); */
-/*   moveScanner(s1,s2,points.first,points.second); */
-
-/*   for(int i = 0; i < 4; ++i) */
-/*   { */
-/*     rotateAxis(s2,'x'); */
-/*     moveScanner(s1,s2,points.first,points.second); */
-
-/*     // check if they align */
-/*     if(pointsMatch(s1,s2,points.first,points.second)) */
-/*     { */
-/*         int sum = countOverlap(s1,s2); */
-/*         if(sum > max) */
-/*           max = sum; */
-/*     } */
-/*   } */
+  /* max = markCounted(s1,s2); */
   return max;
 }
 
@@ -343,6 +270,7 @@ void part1()
   for(int s1 = 0; s1 < scanners.size() ; ++s1)
   {
     for(int s2 = s1 + 1; s2 < scanners.size() ; ++s2)
+    /* for(int s2 = 0; s2 < scanners.size() ; ++s2) */
     {
       std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> distance;
       // get matching distances
@@ -350,7 +278,8 @@ void part1()
       /* for(int k = 0; k < 1; ++k) */
       {
         //get distance
-        for(int p = k+1; p < scanners.at(s1).beacons.size() ; ++p)
+        /* for(int p = k+1; p < scanners.at(s1).beacons.size() ; ++p) */
+        for(int p = 0; p < scanners.at(s1).beacons.size() ; ++p)
         /* for(int p = k+1; p < 2; ++p) */
         {
           int const xd = abs(scanners.at(s1).beacons.at(k).x - scanners.at(s1).beacons.at(p).x);
@@ -361,7 +290,7 @@ void part1()
           //find match
           for(int i = 0; i < scanners.at(s2).beacons.size() ; ++i)
           {
-            for(int j = i+1; j < scanners.at(s2).beacons.size() ; ++j)
+            for(int j = 0; j < scanners.at(s2).beacons.size() ; ++j)
             {
               int const xd2 = abs(scanners.at(s2).beacons.at(i).x - 
                   scanners.at(s2).beacons.at(j).x);
@@ -384,8 +313,6 @@ void part1()
                 points.first = p1;
                 points.second = p2;
                 distance.push_back(points);
-                /* std::cout << "distance between " << k << " and " << p << " scanner " << s1 << " is same as "; */
-                /* std::cout << "distance between " << i << " and " << j << " scanner " << s2 << "\n"; */
               }
             }
           }
@@ -393,7 +320,6 @@ void part1()
       }
 
       int max = 0;
-      /* std::cout << distance.size() << "\n"; */
       for(int i = 0; i < distance.size(); ++i)
       {
         int over = checkAllaxis(scanners.at(s1), scanners.at(s2), distance.at(i));
@@ -405,10 +331,7 @@ void part1()
             << " y: " << scanners.at(s2).y << " z: " << scanners.at(s2).z << "\n";
         }
       }
-
-      /* if(max >= 12) */
-        overlap += max;
-      /* std::cout << "Overlap between s" << s1<< " and s" << s2<< " is " << max << "\n"; */
+      overlap += max;
     }
     std::cout << std::endl;
   }
@@ -419,14 +342,17 @@ void part1()
     sumBeacons += a.beacons.size();
   }
   std::cout << "total beacons " << sumBeacons << "\n";
-  std::cout << "total unique " << sumBeacons - (2*overlap) << "\n";
-  /* std::cout << "total unique " << sumBeacons - (overlap) << "\n"; */
+  /* std::cout << "total unique " << sumBeacons - (2*overlap) << "\n"; */
+  std::cout << "total unique " << sumBeacons - overlap << "\n";
 }
 
 
 
 
 // 362 too high, 302 too low
+// 334 is not
+// 335 is not
+// 376 is not obviously...
 
 
 
