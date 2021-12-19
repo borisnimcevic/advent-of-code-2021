@@ -135,11 +135,12 @@ int countOverlap(const Scanner &s1, const Scanner &s2)
 }
 
 
-void checkAllaxis(const Scanner &s1, 
+int checkAllaxis(const Scanner &s1, 
     Scanner &s2,
     const std::pair<std::pair<int, int>, std::pair<int, int>> &points)
 {
   // check 16 axis
+  int max = 0;
   for(int i = 0; i < 4; ++i){
     rotateAxis(s2,'z');
     moveScanner(s1,s2,points.first,points.second);
@@ -152,12 +153,13 @@ void checkAllaxis(const Scanner &s1,
       if(pointsMatch(s1,s2,points.first,points.second))
       {
           int sum = countOverlap(s1,s2);
-          std::cout << "number of overlaps: " << sum << "\n";
+          if(sum > max)
+            max = sum;
       }
     }
   }
 
-  // check 8 axis
+  // check 4 axis
   rotateAxis(s2,'y');
   moveScanner(s1,s2,points.first,points.second);
 
@@ -169,10 +171,12 @@ void checkAllaxis(const Scanner &s1,
     if(pointsMatch(s1,s2,points.first,points.second))
     {
         int sum = countOverlap(s1,s2);
-        std::cout << "number of overlaps: " << sum << "\n";
+        if(sum > max)
+          max = sum;
     }
   }
 
+  // check 4 axis
   rotateAxis(s2,'y');
   moveScanner(s1,s2,points.first,points.second);
   rotateAxis(s2,'y');
@@ -187,9 +191,11 @@ void checkAllaxis(const Scanner &s1,
     if(pointsMatch(s1,s2,points.first,points.second))
     {
         int sum = countOverlap(s1,s2);
-        std::cout << "number of overlaps: " << sum << "\n";
+        if(sum > max)
+          max = sum;
     }
   }
+  return max;
 }
 
 
@@ -277,7 +283,8 @@ void part1()
     }
   }
 
-  checkAllaxis(scanners.at(0), scanners.at(1), distance.at(0));
+  int over = checkAllaxis(scanners.at(0), scanners.at(1), distance.at(0));
+  std::cout << "Overlap between s0 and s1 is " << over << "\n";
 }
 
 
