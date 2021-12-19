@@ -19,7 +19,7 @@ struct Scanner
   std::vector<Beacon> beacons;
 };
 
-void part1();
+int part1();
 
 int main()
 {
@@ -255,7 +255,7 @@ void incCounters(Scanner &s1,
   markCounted(s1,s2);
 }
 
-void part1()
+int part1()
 {
   // ------ read bingo numbers
   std::ifstream file(inputFile);
