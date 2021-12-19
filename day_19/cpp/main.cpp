@@ -79,7 +79,6 @@ bool pointsMatch(
      s1.beacons.at(p1.first).y == s2.beacons.at(p2.first).y &&
      s1.beacons.at(p1.first).z == s2.beacons.at(p2.first).z)
   {
-    std::cout << "first points match\n";
     if(s1.beacons.at(p1.second).x == s2.beacons.at(p2.second).x &&
        s1.beacons.at(p1.second).y == s2.beacons.at(p2.second).y &&
        s1.beacons.at(p1.second).z == s2.beacons.at(p2.second).z)
@@ -119,6 +118,20 @@ void rotateAxis(Scanner &scan, const char axis)
       b.y *= -1;
     }
   }
+}
+
+int countOverlap(const Scanner &s1, const Scanner &s2)
+{
+  int sum = 0;
+  for (const auto &b1 : s1.beacons) {
+    for (const auto &b2 : s2.beacons) {
+      if(b1.x == b2.x && b1.y == b2.y && b1.z == b2.z)
+      {
+        sum++;
+      }
+    }
+  }
+  return sum;
 }
 
 
@@ -183,7 +196,7 @@ void part1()
 
           if( xd == xd2 && yd == yd2 && zd == zd2)
           {
-            std::cout << "distance between " << k << " and " << p << " scanner " << 0 << "\n";
+            std::cout << "distance between " << k << " and " << p << " scanner " << 0 << " is same as ";
             std::cout << "distance between " << i << " and " << j << " scanner " << 1 << "\n";
           }
         }
@@ -202,14 +215,21 @@ void part1()
   points.first = p1;
   points.second = p2;
 
+  for(int i = 0; i < 4; ++i){
+    rotateAxis(scanners.at(1),'z');
+    moveScanner(scanners.at(0),scanners.at(1),p1,p2);
 
-  /* rotateAxis(scanners.at(1),'x'); */
-  moveScanner(scanners.at(0),scanners.at(1),p1,p2);
+    for(int i = 0; i < 4; ++i){
+      rotateAxis(scanners.at(1),'x');
+      moveScanner(scanners.at(0),scanners.at(1),p1,p2);
 
-  // check if they align
-  if(pointsMatch(scanners.at(0),scanners.at(1),p1,p2))
-  {
-      std::cout << "BOTH\n";
+      // check if they align
+      if(pointsMatch(scanners.at(0),scanners.at(1),p1,p2))
+      {
+          int sum = countOverlap(scanners.at(0), scanners.at(1));
+          std::cout << "number of overlaps: " << sum << "\n";
+      }
+    }
   }
 }
 
