@@ -11,7 +11,7 @@ void applyFilter(const std::vector<bool> &,std::vector<std::vector<bool>> &);
 int countLights(const std::vector<std::vector<bool>> &);
 std::vector<std::vector<bool>> createBlankOutput(std::vector<std::vector<bool>> &);
 std::vector<std::vector<bool>> addBorder(std::vector<std::vector<bool>> &input, int thickness, bool);
-void flipBorder(std::vector<std::vector<bool>> &);
+void flipBorder(std::vector<std::vector<bool>> &, bool);
 
 
 const std::string inputFile = "../input/old.input.txt";
@@ -30,28 +30,19 @@ void part1()
   getInput(filter, input_image);
   input_image = addBorder(input_image, 2, 1);
 
-  for(int i = 0 ; i < 2; ++i)
+  for(int i = 0 ; i < 50; ++i)
   {
-    std::cout << "before filter\n";
-    /* printImage(input_image); */
     applyFilter(filter, input_image);
-    flipBorder(input_image);
-    std::cout << "after filter\n";
-    /* printImage(input_image); */
+    flipBorder(input_image,i % 2);
     input_image = addBorder(input_image, 1, i % 2);
   }
-  /* flipBorder(input_image); */
 
-  /* printImage(input_image); */
-  int lights = countLights(input_image);
-  /* lights = lights - (2*input_image.size() + 2*input_image.front().size()); */
-  std::cout << lights << "\n";
+  std::cout << countLights(input_image) << "\n";
 
 }
 
 void printImage(const std::vector<std::vector<bool>> &image)
 {
-  /* std::cout << "image:\n"; */
   for(const auto &row: image)
   {
     for(const auto &pixel: row)
@@ -148,7 +139,6 @@ std::vector<std::vector<bool>> addBorder(std::vector<std::vector<bool>> &input, 
   std::vector<bool> row_temp;
   std::vector<std::vector<bool>> temp_image;
 
-  // top border
   const int width = input.front().size();
   for(int i = 0; i < width + (thickness*2); ++i)
   {
@@ -187,7 +177,6 @@ std::vector<std::vector<bool>> addBorder(std::vector<std::vector<bool>> &input, 
 
 void applyFilter(const std::vector<bool> &filter ,std::vector<std::vector<bool>> &input)
 {
-  /* printImage(input); */
   std::vector<std::vector<bool>> output_image = createBlankOutput(input);
 
   std::vector<bool> index;
@@ -219,7 +208,6 @@ void applyFilter(const std::vector<bool> &filter ,std::vector<std::vector<bool>>
   }
 
   input = output_image;
-  /* printImage(input); */
 }
 
 int countLights(const std::vector<std::vector<bool>> &input)
@@ -233,30 +221,37 @@ int countLights(const std::vector<std::vector<bool>> &input)
           sum++;
     }
   }
-  /* for(const auto &row: input) */
-  /* { */
-  /*   for(const auto &pixel: row) */
-  /*   { */
-  /*     if(pixel) */
-  /*       sum++; */
-  /*   } */
-  /* } */
   return sum;
 }
 
-void flipBorder(std::vector<std::vector<bool>> &input)
+void flipBorder(std::vector<std::vector<bool>> &input, bool odd)
 {
-  for(int i = 0; i < input.front().size(); i++)
+  if(!odd)
   {
-    input.front().at(i) = !input.front().at(i);
-    input.back().at(i) = !input.back().at(i);
-  }
+    for(int i = 0; i < input.front().size(); i++)
+    {
+      input.front().at(i) = true;
+      input.back().at(i) = true;
+    }
 
-  for(int row = 1; row < input.size() - 1; row++)
+    for(int row = 1; row < input.size() - 1; row++)
+    {
+      input.at(row).front() = true;
+      input.at(row).back() = true;
+    }
+  }
+  else
   {
-    input.at(row).front() = !input.at(row).front();
-    input.at(row).back() = !input.at(row).back();
+    for(int i = 0; i < input.front().size(); i++)
+    {
+      input.front().at(i) = false;
+      input.back().at(i) = false;
+    }
+
+    for(int row = 1; row < input.size() - 1; row++)
+    {
+      input.at(row).front() = false;
+      input.at(row).back() = false;
+    }
   }
 }
-
-// 4942 is too high
