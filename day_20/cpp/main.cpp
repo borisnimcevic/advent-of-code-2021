@@ -7,6 +7,9 @@ void part1();
 void printImage(const std::vector<std::vector<bool>> &);
 void printLine(const std::vector<bool> &);
 void getInput(std::vector<bool> &,std::vector<std::vector<bool>> &);
+void applyFilter(const std::vector<bool> &,std::vector<std::vector<bool>> &);
+
+
 std::vector<std::vector<bool>> createBlankOutput(std::vector<std::vector<bool>> &);
 std::vector<std::vector<bool>> addBorder(std::vector<std::vector<bool>> &);
 
@@ -25,42 +28,10 @@ void part1()
   std::vector<std::vector<bool>> input_image;
   getInput(filter, input_image);
 
-  input_image = addBorder(input_image);
   printImage(input_image);
 
-  std::vector<std::vector<bool>> output_image = createBlankOutput(input_image);
-  printImage(output_image);
-
-  // apply filter
-  std::vector<bool> index;
-
-  for(int row = 1; row < input_image.size() - 1; row++)
-  {
-    for(int col = 1; col < input_image.front().size() - 1; col++)
-    {
-      index.clear();
-      index.push_back(input_image.at(row-1).at(col-1));
-      index.push_back(input_image.at(row-1).at(col));
-      index.push_back(input_image.at(row-1).at(col+1));
-      index.push_back(input_image.at(row).at(col-1));
-      index.push_back(input_image.at(row).at(col));
-      index.push_back(input_image.at(row).at(col+1));
-      index.push_back(input_image.at(row+1).at(col-1));
-      index.push_back(input_image.at(row+1).at(col));
-      index.push_back(input_image.at(row+1).at(col+1));
-
-      int num = 0;
-      for(const auto &a: index)
-      {
-        num <<= 1;
-        num |= a;
-      }
-
-      output_image.at(row).at(col) = filter.at(num);
-    }
-  }
-
-  printImage(output_image);
+  applyFilter(filter, input_image);
+  printImage(input_image);
 }
 
 void printImage(const std::vector<std::vector<bool>> &image)
@@ -187,4 +158,40 @@ std::vector<std::vector<bool>> addBorder(std::vector<std::vector<bool>> &input)
   temp_image.push_back(border);
 
   return temp_image;
+}
+
+void applyFilter(const std::vector<bool> &filter ,std::vector<std::vector<bool>> &input)
+{
+  input= addBorder(input);
+  std::vector<std::vector<bool>> output_image = createBlankOutput(input);
+
+  std::vector<bool> index;
+
+  for(int row = 1; row < input.size() - 1; row++)
+  {
+    for(int col = 1; col < input.front().size() - 1; col++)
+    {
+      index.clear();
+      index.push_back(input.at(row-1).at(col-1));
+      index.push_back(input.at(row-1).at(col));
+      index.push_back(input.at(row-1).at(col+1));
+      index.push_back(input.at(row).at(col-1));
+      index.push_back(input.at(row).at(col));
+      index.push_back(input.at(row).at(col+1));
+      index.push_back(input.at(row+1).at(col-1));
+      index.push_back(input.at(row+1).at(col));
+      index.push_back(input.at(row+1).at(col+1));
+
+      int num = 0;
+      for(const auto &a: index)
+      {
+        num <<= 1;
+        num |= a;
+      }
+
+      output_image.at(row).at(col) = filter.at(num);
+    }
+  }
+
+  input = output_image;
 }
