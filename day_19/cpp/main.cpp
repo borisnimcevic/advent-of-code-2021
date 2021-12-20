@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <list>
 
 const std::string inputFile = "../input/input.txt";
 /* const std::string inputFile = "../input/test.txt"; */
@@ -19,7 +20,9 @@ struct Scanner
   std::vector<Beacon> beacons;
 };
 
-int part1();
+Scanner composite_scan;
+
+void part1();
 
 int main()
 {
@@ -255,7 +258,79 @@ void incCounters(Scanner &s1,
   markCounted(s1,s2);
 }
 
-int part1()
+void move(Scanner &small, Beacon &beac, Beacon &small_beac)
+{
+  const int xm = beac.x - small_beac.x;
+  const int ym = beac.x - small_beac.y;
+  const int zm = beac.x - small_beac.z;
+
+  for(auto &b : small.beacons)
+  {
+    b.x += xm;
+    b.y += ym;
+    b.z += zm;
+  }
+
+  small.x += xm;
+  small.y += ym;
+  small.z += zm;
+}
+
+int countOverlap(const Scanner &small)
+{
+  int sum = 0;
+  for (const auto &b1 : composite_scan.beacons) {
+    for (const auto &b2 : small.beacons) {
+      if(b1.x == b2.x && b1.y == b2.y && b1.z == b2.z)
+      {
+        sum++;
+      }
+    }
+  }
+  return sum;
+}
+
+void align(Scanner &small, Beacon &beac)
+{
+  /* Scanner st = s2; */
+  for(auto &b: small.beacons)
+  {
+    for(int j = 0; j < 4; ++j)
+    {
+      rotateAxis(small,'z');
+      move(small, beac, b);
+
+      for(int i = 0; i < 4; ++i)
+      {
+        rotateAxis(small,'x');
+        move(small, beac, b);
+
+        for(int k = 0; k < 4; ++k)
+        {
+          rotateAxis(small,'y');
+          move(small, beac, b);
+
+          // check if they align
+          int sum = countOverlap(small);
+          if(sum > 11)
+          {
+            std::cout << "(" << small.x << "," << small.y << "," << small.z << ")\n";
+          }
+        }
+      }
+    }
+  }
+}
+
+void compare(Scanner &comp, Scanner &small_scan)
+{
+  for(auto &b : comp.beacons)
+  {
+    align(small_scan, b);
+  }
+}
+
+void part1()
 {
   // ------ read bingo numbers
   std::ifstream file(inputFile);
@@ -269,7 +344,7 @@ int part1()
 
   Scanner scanner_temp;
   Beacon beacon_temp;
-  std::vector<Scanner> scanners;
+  std::list<Scanner> scanners;
 
   while(file >> temp)
   {
@@ -289,111 +364,118 @@ int part1()
     }
   }
   // done reading data
+  composite_scan = scanners.front();
+  scanners.pop_front();
 
+  Scanner new_scan = scanners.front();
+  compare(composite_scan, new_scan);
 
-  for(int s1 = 0; s1 < scanners.size() ; ++s1)
-  {
-    for(int s2 = s1; s2 < scanners.size() ; ++s2)
+  return;
+}
+/*   for(int s1 = 0; s1 < scanners.size() ; ++s1) */
+/*   { */
+/*     for(int s2 = s1; s2 < scanners.size() ; ++s2) */
     /* for(int s2 = 0; s2 < scanners.size() ; ++s2) */
-    {
+/*     { */
       /* if (s1 == s2) */
       /*   break; */
-      std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> distance;
-      // get matching distances
-      for(int k = 0; k < scanners.at(s1).beacons.size() ; ++k)
+/*       std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> distance; */
+/*       // get matching distances */
+/*       for(int k = 0; k < scanners.at(s1).beacons.size() ; ++k) */
       /* for(int k = 0; k < 1; ++k) */
-      {
-        //get distance
-        for(int p = k; p < scanners.at(s1).beacons.size() ; ++p)
+/*       { */
+/*         //get distance */
+/*         for(int p = k; p < scanners.at(s1).beacons.size() ; ++p) */
         /* for(int p = k+1; p < scanners.at(s1).beacons.size() ; ++p) */
         /* for(int p = 0; p < scanners.at(s1).beacons.size() ; ++p) */
-        {
-          int const xd = abs(scanners.at(s1).beacons.at(k).x - scanners.at(s1).beacons.at(p).x);
-          int const yd = abs(scanners.at(s1).beacons.at(k).y - scanners.at(s1).beacons.at(p).y);
-          int const zd = abs(scanners.at(s1).beacons.at(k).z - scanners.at(s1).beacons.at(p).z);
+/*         { */
+/*           int const xd = abs(scanners.at(s1).beacons.at(k).x - scanners.at(s1).beacons.at(p).x); */
+/*           int const yd = abs(scanners.at(s1).beacons.at(k).y - scanners.at(s1).beacons.at(p).y); */
+/*           int const zd = abs(scanners.at(s1).beacons.at(k).z - scanners.at(s1).beacons.at(p).z); */
 
 
-          //find match
-          for(int i = 0; i < scanners.at(s2).beacons.size() ; ++i)
-          {
-            for(int j = i; j < scanners.at(s2).beacons.size() ; ++j)
+/*           //find match */
+/*           for(int i = 0; i < scanners.at(s2).beacons.size() ; ++i) */
+/*           { */
+/*             for(int j = i; j < scanners.at(s2).beacons.size() ; ++j) */
             /* for(int j = i+1; j < scanners.at(s2).beacons.size() ; ++j) */
             /* for(int j = 0; j < scanners.at(s2).beacons.size() ; ++j) */
-            {
-              int const xd2 = abs(scanners.at(s2).beacons.at(i).x - 
-                  scanners.at(s2).beacons.at(j).x);
+/*             { */
+/*               int const xd2 = abs(scanners.at(s2).beacons.at(i).x -  */
+/*                   scanners.at(s2).beacons.at(j).x); */
 
-              int const yd2 = abs(scanners.at(s2).beacons.at(i).y - 
-                  scanners.at(s2).beacons.at(j).y);
+/*               int const yd2 = abs(scanners.at(s2).beacons.at(i).y -  */
+/*                   scanners.at(s2).beacons.at(j).y); */
 
-              int const zd2 = abs(scanners.at(s2).beacons.at(i).z - 
-                  scanners.at(s2).beacons.at(j).z);
+/*               int const zd2 = abs(scanners.at(s2).beacons.at(i).z -  */
+/*                   scanners.at(s2).beacons.at(j).z); */
 
-              if( xd == xd2 && yd == yd2 && zd == zd2)
-              {
-                std::pair<std::pair<int, int>, std::pair<int, int>> points;
-                std::pair<int, int> p1;
-                std::pair<int, int> p2;
-                p1.first = k;
-                p1.second = p;
-                p2.first = i;
-                p2.second = j;
-                points.first = p1;
-                points.second = p2;
-                distance.push_back(points);
-              }
-            }
-          }
-        }
-      }
+/*               if( xd == xd2 && yd == yd2 && zd == zd2) */
+/*               { */
+/*                 std::pair<std::pair<int, int>, std::pair<int, int>> points; */
+/*                 std::pair<int, int> p1; */
+/*                 std::pair<int, int> p2; */
+/*                 p1.first = k; */
+/*                 p1.second = p; */
+/*                 p2.first = i; */
+/*                 p2.second = j; */
+/*                 points.first = p1; */
+/*                 points.second = p2; */
+/*                 distance.push_back(points); */
+/*               } */
+/*             } */
+/*           } */
+/*         } */
+/*       } */
 
-      int max = 0;
-      int index = 0;
-      for(int i = 0; i < distance.size(); ++i)
-      {
-        int over = checkAllaxis(scanners.at(s1), scanners.at(s2), distance.at(i));
-        if(over > max)
-        {
-          max = over;
-          index = i;
-          std::cout << "Overlap between s" << s1<< " and s" << s2<< " is " << max << "\n";
+/*       int max = 0; */
+/*       int index = 0; */
+/*       for(int i = 0; i < distance.size(); ++i) */
+/*       { */
+/*         int over = checkAllaxis(scanners.at(s1), scanners.at(s2), distance.at(i)); */
+/*         if(over > max) */
+/*         { */
+/*           max = over; */
+/*           index = i; */
+/*           std::cout << "Overlap between s" << s1<< " and s" << s2<< " is " << max << "\n"; */
         /*   std::cout << "Sensor " << s2 << " pos: x: " << scanners.at(s2).x */
         /*     << " y: " << scanners.at(s2).y << " z: " << scanners.at(s2).z << "\n"; */
-        }
-      }
-      if(!distance.empty())
-        incCounters(scanners.at(s1), scanners.at(s2), distance.at(index));
+/*         } */
+/*       } */
+/*       if(!distance.empty()) */
+/*         incCounters(scanners.at(s1), scanners.at(s2), distance.at(index)); */
       /* if(s1 != s2) */
       /* overlap += max; */
-    }
-    std::cout << std::endl;
-  }
-  int overlap = 0;
-  for(auto &sc: scanners)
-  {
-    for (auto &b : sc.beacons) {
-      overlap += b.counted;
-    }
-  }
+/*     } */
+/*     std::cout << std::endl; */
+/*   } */
+/*   int overlap = 0; */
+/*   for(auto &sc: scanners) */
+/*   { */
+/*     for (auto &b : sc.beacons) { */
+/*       overlap += b.counted; */
+/*     } */
+/*   } */
 
-  int sumBeacons =0;
-  for(const auto &a: scanners)
-  {
-    sumBeacons += a.beacons.size();
-  }
-  std::cout << "total beacons " << sumBeacons << "\n";
+/*   int sumBeacons =0; */
+/*   for(const auto &a: scanners) */
+/*   { */
+/*     sumBeacons += a.beacons.size(); */
+/*   } */
+/*   std::cout << "total beacons " << sumBeacons << "\n"; */
   /* std::cout << "total unique " << sumBeacons - (2*overlap) << "\n"; */
-  std::cout << "total unique " << sumBeacons - overlap << "\n";
-}
+/*   std::cout << "total unique " << sumBeacons - overlap << "\n"; */
+/* } */
 
 
 
 
-// 362 too high, 302 too low
-// 310 is not
-// 311 is not
-// 328 is not
-// 333 is not
-// 334 is not
-// 335 is not
-// 376 is not obviously...
+/* // 362 too high, 302 too low */
+/* // 310 is not */
+/* // 311 is not */
+/* // 312 is not */
+/* // 328 is not */
+/* // 333 is not */
+/* // 334 is not */
+/* // 335 is not */
+/* // 376 is not obviously... */
