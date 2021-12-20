@@ -27,11 +27,24 @@ void part1()
   std::vector<bool> filter;
   std::vector<std::vector<bool>> input_image;
   getInput(filter, input_image);
+  /* printImage(input_image); */
 
-  printImage(input_image);
+  for(int i = 0 ; i < 2; ++i)
+  {
+    applyFilter(filter, input_image);
+    /* printImage(input_image); */
+  }
 
-  applyFilter(filter, input_image);
-  printImage(input_image);
+  int sum = 0;
+  for(const auto &row: input_image)
+  {
+    for(const auto &pixel: row)
+    {
+      if(pixel)
+        sum++;
+    }
+  }
+  std::cout << sum << "\n";
 }
 
 void printImage(const std::vector<std::vector<bool>> &image)
