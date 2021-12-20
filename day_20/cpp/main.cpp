@@ -29,18 +29,38 @@ void part1()
   printImage(input_image);
 
   std::vector<std::vector<bool>> output_image = createBlankOutput(input_image);
-
   printImage(output_image);
 
   // apply filter
-/*   std::vector<bool> index; */
+  std::vector<bool> index;
 
-/*   for(int row = 0; row < input_image.size(); row++) */
-/*   { */
-/*     for(int col = 0; col < input_image.front().size(); col++) */
-/*     { */
-/*     } */
-/*   } */
+  for(int row = 1; row < input_image.size() - 1; row++)
+  {
+    for(int col = 1; col < input_image.front().size() - 1; col++)
+    {
+      index.clear();
+      index.push_back(input_image.at(row-1).at(col-1));
+      index.push_back(input_image.at(row-1).at(col));
+      index.push_back(input_image.at(row-1).at(col+1));
+      index.push_back(input_image.at(row).at(col-1));
+      index.push_back(input_image.at(row).at(col));
+      index.push_back(input_image.at(row).at(col+1));
+      index.push_back(input_image.at(row+1).at(col-1));
+      index.push_back(input_image.at(row+1).at(col));
+      index.push_back(input_image.at(row+1).at(col+1));
+
+      int num = 0;
+      for(const auto &a: index)
+      {
+        num <<= 1;
+        num |= a;
+      }
+
+      output_image.at(row).at(col) = filter.at(num);
+    }
+  }
+
+  printImage(output_image);
 }
 
 void printImage(const std::vector<std::vector<bool>> &image)
